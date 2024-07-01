@@ -1,3 +1,4 @@
+cmake_minimum_required(VERSION 3.18)
 set(PROJECT_NAME my_dll)
 # Set SRC INC folder location
 set(DLL_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
