@@ -1,0 +1,76 @@
+{
+  "version": 4,
+  "cmakeMinimumRequired": {
+      "major": 3,
+      "minor": 23,
+      "patch": 0
+  },
+  "configurePresets":[
+  {
+    "name": "default",
+    "hidden": true,
+    "generator": "Ninja Multi-Config",
+    "binaryDir": "${sourceDir}/build/${presetName}",
+    "cacheVariables": {
+                      "GCC_COMPILER_ROOT_DIR": "C:\\msys64\\ucrt64\\"
+                      }
+  },
+  {
+    "name": "C_dll_dir",
+    "hidden": true,
+    "cacheVariables": {
+                      "PROJECT_SRC_PATH": "C_dll"
+                      }
+  },
+  {
+    "name": "C_dll",
+    "displayName": "C_dll",
+    "inherits": [ "default",  "C_dll_dir" ],
+    "description": "compilers: ucrt64 gcc.exe, CXX g++.exe"
+  }
+  ],
+  "buildPresets": [
+    {
+      "name": "default",
+      "hidden": true
+    },
+    {
+      "name": "cfg-debug",
+      "hidden": true,
+      "configuration" : "Debug"
+    },
+    {
+      "name": "cfg-release",
+      "hidden": true,
+      "configuration" : "Release"
+    },
+    {
+      "name": "cfg-relwithdebinfo",
+      "hidden": true,
+      "configuration" : "RelWithDebInfo"
+    },
+
+    {
+      "name": "C_dll_Debug",
+      "configurePreset": "C_dll",
+      "inherits": [ "default", "cfg-debug" ],
+      "displayName": "C_dll_Debug",
+      "description": "Build 'Debug' configuration of C_dll_Debug using GCC compiler and Ninja"
+    },
+    {
+      "name": "C_dll_release",
+      "configurePreset": "C_dll",
+      "inherits": [ "default", "cfg-release" ],
+      "displayName": "C_dll_release",
+      "description": "Build 'release' configuration of C_dll_Debug using GCC compiler and Ninja"
+    },
+    {
+      "name": "C_dll_relwithdebinfo",
+      "configurePreset": "C_dll",
+      "inherits": [ "default", "cfg-relwithdebinfo" ],
+      "displayName": "C_dll_relwithdebinfo",
+      "description": "Build 'cfg-relwithdebinfo' configuration of C_dll_Debug using GCC compiler and Ninja"
+    }
+  
+  ]
+}
