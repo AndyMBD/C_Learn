@@ -143,6 +143,13 @@ class CanoeSync(object):
             sys_value.Value = var
         else:
             raise RuntimeError("CANoe is not open,unable to GetVariable")
+        
+    def capl_Call(self, capl_name):
+        if (self.App != None):
+            calp_fun = self.App.CAPL.GetFunction( "capl_name")
+            return calp_fun
+        else:
+            raise RuntimeError("CANoe is not open,unable to GetVariable")
 
     def Start(self): 
         if not self.Running():
@@ -267,6 +274,8 @@ while not msvcrt.kbhit():
     print(EngineSpeed)
     EngineStateSwitch=app.get_SysVar("Engine","EngineStateSwitch")
     print(EngineStateSwitch)
+    app.capl_Call("write")("good job")
+    # write("good job")
 
     
 # stops the measurement
