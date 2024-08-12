@@ -1,0 +1,46 @@
+/*@!Encoding:936*/
+includes
+{
+  
+}
+
+variables
+{
+  char cmd[256];
+  char buffer[100], str[15] = "python_control";
+  long python_cmd;
+}
+on start
+{
+  //  getAbsFilePath
+  python_cmd = snprintf(buffer,elcount(buffer),"python ../%s.py", str);
+  write("Output:\n%s : Character count = %d\n", buffer, python_cmd);
+  sysExecCmd("python","../capl/python_control.py");
+}
+
+on preStop
+{
+//  sysExecCmd("python","exit");
+  @sysvar::python::py_exit=1;
+}
+
+on key 'x'
+{
+   char absPath[256];
+   getAbsFilePath("Nodes\\Test.can", absPath, 256);
+   write ("absPath: %s ", absPath);
+}
+on key 'a'
+{
+
+//    snprintf(cmd,"python ../python_control.py");
+//    sysExec("python ../python_control.py");
+    sysExecCmd("python","../capl/python_control.py");
+}
+on sysvar sysvar::python::py_exit
+{
+  if(@this ==1)
+  {
+    @sysvar::python::py_exit=1;
+  }
+}
