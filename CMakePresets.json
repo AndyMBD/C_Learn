@@ -27,6 +27,19 @@
     "displayName": "C_dll",
     "inherits": [ "default",  "C_dll_dir" ],
     "description": "compilers: ucrt64 gcc.exe, CXX g++.exe"
+  },
+  {
+    "name": "CTest_001_dir",
+    "hidden": true,
+    "cacheVariables": {
+                      "PROJECT_SRC_PATH": "CTest_001"
+                      }
+  },
+  {
+    "name": "CTest_001",
+    "displayName": "CTest_001",
+    "inherits": [ "default",  "CTest_001_dir" ],
+    "description": "compilers: ucrt64 gcc.exe, CXX g++.exe"
   }
   ],
   "buildPresets": [
@@ -70,6 +83,27 @@
       "inherits": [ "default", "cfg-relwithdebinfo" ],
       "displayName": "C_dll_relwithdebinfo",
       "description": "Build 'cfg-relwithdebinfo' configuration of C_dll_Debug using GCC compiler and Ninja"
+    },
+    {
+      "name": "CTest_001_Debug",
+      "configurePreset": "CTest_001",
+      "inherits": [ "default", "cfg-debug" ],
+      "displayName": "CTest_001_Debug",
+      "description": "Build 'Debug' configuration of CTest_001_Debug using GCC compiler and Ninja"
+    },
+    {
+      "name": "CTest_001_release",
+      "configurePreset": "CTest_001",
+      "inherits": [ "default", "cfg-release" ],
+      "displayName": "CTest_001_release",
+      "description": "Build 'release' configuration of CTest_001_Debug using GCC compiler and Ninja"
+    },
+    {
+      "name": "CTest_001_relwithdebinfo",
+      "configurePreset": "CTest_001",
+      "inherits": [ "default", "cfg-relwithdebinfo" ],
+      "displayName": "CTest_001_relwithdebinfo",
+      "description": "Build 'cfg-relwithdebinfo' configuration of CTest_001_Debug using GCC compiler and Ninja"
     }
   
   ]
