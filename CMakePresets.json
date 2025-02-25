@@ -45,13 +45,26 @@
     "name": "C_001_dir",
     "hidden": true,
     "cacheVariables": {
-                      "PROJECT_SRC_PATH": "C_001"
-                      }
+      "PROJECT_SRC_PATH": "C_001"
+    }
   },
   {
     "name": "C_001",
     "displayName": "C_001",
     "inherits": [ "default",  "C_001_dir" ],
+    "description": "compilers: ucrt64 gcc.exe, CXX g++.exe"
+  },
+  {
+    "name": "C_002_dir",
+    "hidden": true,
+    "cacheVariables": {
+      "PROJECT_SRC_PATH": "C_002"
+    }
+  },
+  {
+    "name": "C_002",
+    "displayName": "C_002",
+    "inherits": [ "default",  "C_002_dir" ],
     "description": "compilers: ucrt64 gcc.exe, CXX g++.exe"
   }
   ],
@@ -124,6 +137,13 @@
       "inherits": [ "default", "cfg-debug" ],
       "displayName": "C_001_Debug",
       "description": "Build 'Debug' configuration of C_001_Debug using GCC compiler and Ninja"
+    },
+    {
+      "name": "C_002_Debug",
+      "configurePreset": "C_002",
+      "inherits": [ "default", "cfg-debug" ],
+      "displayName": "C_002_Debug",
+      "description": "Build 'Debug' configuration of C_002_Debug using GCC compiler and Ninja"
     }
     
   ]
