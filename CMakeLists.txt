@@ -7,4 +7,5 @@ PROJECT(${PROJECT_NAME})
 # 2. add subdirectory and include directory
 # add_subdirectory(${PROJECT_SOURCE_DIR}/${PROJECT_SRC_PATH})
 # add_subdirectory(${PROJECT_SOURCE_DIR}/${PROJECT_SRC_PATH})
-add_subdirectory(${PROJECT_SOURCE_DIR}/${PROJECT_SRC_PATH})
+# add_subdirectory(${PROJECT_SOURCE_DIR}/${PROJECT_SRC_PATH})
+add_subdirectory(${PROJECT_SOURCE_DIR}/C_002)
