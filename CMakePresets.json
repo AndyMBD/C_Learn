@@ -7,12 +7,21 @@
   },
   "configurePresets":[
   {
-    "name": "default",
+    "name": "ucrt64",
     "hidden": true,
     "generator": "Ninja Multi-Config",
     "binaryDir": "${sourceDir}/build/${presetName}",
     "cacheVariables": {
                       "GCC_COMPILER_ROOT_DIR": "C:\\msys64\\ucrt64\\"
+                      }
+  },
+  {
+    "name": "mingw64",
+    "hidden": true,
+    "generator": "Ninja Multi-Config",
+    "binaryDir": "${sourceDir}/build/${presetName}",
+    "cacheVariables": {
+                      "GCC_COMPILER_ROOT_DIR": "C:\\msys64\\mingw64\\"
                       }
   },
   {
@@ -25,7 +34,7 @@
   {
     "name": "C_dll",
     "displayName": "C_dll",
-    "inherits": [ "default",  "C_dll_dir" ],
+    "inherits": [ "ucrt64",  "C_dll_dir" ],
     "description": "compilers: ucrt64 gcc.exe, CXX g++.exe"
   },
   {
@@ -38,7 +47,7 @@
   {
     "name": "CTest_001",
     "displayName": "CTest_001",
-    "inherits": [ "default",  "CTest_001_dir" ],
+    "inherits": [ "ucrt64",  "CTest_001_dir" ],
     "description": "compilers: ucrt64 gcc.exe, CXX g++.exe"
   },
   {
@@ -51,7 +60,7 @@
   {
     "name": "C_001",
     "displayName": "C_001",
-    "inherits": [ "default",  "C_001_dir" ],
+    "inherits": [ "ucrt64",  "C_001_dir" ],
     "description": "compilers: ucrt64 gcc.exe, CXX g++.exe"
   },
   {
@@ -64,8 +73,8 @@
   {
     "name": "C_002",
     "displayName": "C_002",
-    "inherits": [ "default",  "C_002_dir" ],
-    "description": "compilers: ucrt64 gcc.exe, CXX g++.exe"
+    "inherits": [ "mingw64",  "C_002_dir" ],
+    "description": "compilers: mingw64 gcc.exe, CXX g++.exe"
   }
   ],
   "buildPresets": [
