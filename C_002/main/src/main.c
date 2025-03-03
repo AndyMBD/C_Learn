@@ -7,6 +7,8 @@
 // #include "my_lib.h"
 #include "my_dll.h"
 #include "my_lib.h"
+#include <stdio.h>
+#include <gsl/gsl_sf_bessel.h>
 // #pragma comment(lib,"my_lib.lib")
 // extern uint32_t multiply(uint16_t a,uint16_t b);
 // __declspec(dllimport) uint32_t add(uint16_t a,uint16_t b);
@@ -16,6 +18,9 @@ uint8_t Set_Position_Percentage_Out(uint16_t Act_Position);
 uint16_t get_Req_Position(uint8_t Motor_TargetPosition_Percentage);
 int main()
 {
+	double x = 5.0;
+	double y = gsl_sf_bessel_J0 (x);
+	printf ("J0(%g) = %.18e\n", x, y);
 	
 	Soft_Start_ADC	=  (uint16_t)(HARD_START_TO_SOFT_START_DEGREE*(HARD_END_POSITION_ADC-HARD_START_POSITION_ADC)/HARD_START_TO_HARD_END_DEGREE+HARD_START_POSITION_ADC);
 	Soft_End_ADC	=  (uint16_t)((HARD_START_TO_HARD_END_DEGREE-HARD_END_TO_SOFT_END_DEGREE)*(HARD_END_POSITION_ADC-HARD_START_POSITION_ADC)/HARD_START_TO_HARD_END_DEGREE+HARD_START_POSITION_ADC);
