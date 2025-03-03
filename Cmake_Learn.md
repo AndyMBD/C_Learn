@@ -71,3 +71,17 @@ Summary:
    3. LIBRARY_OUTPUT_PATH：默认存放库文件的位置，如果产生的是静态库并且没有指定 
    4. CMAKE_ARCHIVE_OUTPUT_DIRECTORY 则存放在该目录下，动态库也类似
    5. CMAKE_RUNTIME_OUTPUT_DIRECTORY：存放可执行软件的目录
+
+4. msys install gsl and gtest
+   1. Install gsl and gtest
+      1.  pacman -S mingw-w64-ucrt-x86_64-gsl
+      2.  pacman -S mingw-w64-ucrt-x86_64-gtest
+   2.  After install use it in cmake
+       ```cmake
+       find_package(GSL REQUIRED)
+       find_package(GTest REQUIRED)
+       include_directories(${GSL_INCLUDE_DIRS})
+       include_directories(${GTEST_INCLUDE_DIRS})
+       target_link_libraries(${PROJECT_NAME} ${GSL_LIBRARIES})
+       target_link_libraries(${PROJECT_NAME} ${GTEST_BOTH_LIBRARIES})
+       ```

@@ -1,0 +1,187 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include "gsl_ma.h"
+#include <gsl/gsl_sf_bessel.h>
+#include <gsl/gsl_poly.h>
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_movstat.h>
+#include <gsl/gsl_rng.h>
+#include <gsl/gsl_randist.h>
+#include <gsl/gsl_vector.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_matrix.h>
+#include <gsl/gsl_odeiv2.h>
+void gsl_math_poly();
+void gsl_math_pow();
+void gsl_math_bessel();
+void gsl_math_movstat(void);
+int jac(double t, const double y[], double *dfdy,double dfdt[], void *params);
+int func(double t, const double y[], double f[],void *params);
+int gsl_odeiv2_Test_1(void);
+int gsl_odeiv2_Test_2(void);
+void gsl_math_main()
+{
+    // gsl_math_pow();
+    // gsl_math_bessel();
+    // gsl_math_poly();
+    // gsl_math_movstat();
+    gsl_odeiv2_Test_1();
+    // gsl_odeiv2_Test_2();
+}
+void gsl_math_pow()
+{
+    double x = 5.0;
+    double y = gsl_pow_4(3.141); /* compute 3.141**4 */
+    // printf("*--------------------------------------------*\n");
+    printf("gsl_pow_4\n");
+    printf("----------------------------------------------------\n \n");
+    printf("J0(%g) = %.18e\n", x, y);
+    printf("----------------------------------------------------\n \n");
+    // printf("*--------------------------------------------*\n \n");
+}
+void gsl_math_bessel()
+{
+
+    double x = 5.0;
+    double y = gsl_sf_bessel_J0(x);
+    // printf("*--------------------------------------------*\n");
+    printf("gsl_sf_bessel_J0\n");
+    printf("----------------------------------------------------\n \n");
+    printf("J0(%g) = %.18e\n", x, y);
+    printf("----------------------------------------------------\n \n");
+    // printf("*--------------------------------------------*\n \n");
+}
+void gsl_math_poly()
+{
+    double x = 5.0;
+    int i;
+    /* coefficients of P(x) = -1 + x^5 */
+    double a[6] = {-1, 0, 0, 0, 0, 1};
+    double z[10];
+    gsl_poly_complex_workspace *w = gsl_poly_complex_workspace_alloc(6);
+    gsl_poly_complex_solve(a, 6, w, z);
+    // printf("*--------------------------------------------*\n");
+    printf("gsl_poly_complex_solve\n");
+    printf("----------------------------------------------------\n");
+    gsl_poly_complex_workspace_free(w);
+    for (i = 0; i < 5; i++)
+    {
+        printf("z%d = %+.18f %+.18f\n",
+               i, z[2 * i], z[2 * i + 1]);
+    }
+    printf("----------------------------------------------------\n");
+    // printf("*--------------------------------------------*\n");
+}
+
+void gsl_math_movstat(void)
+{
+    const size_t N = 500; /* length of time series */
+    const size_t K = 11;  /* window size */
+    gsl_movstat_workspace *w = gsl_movstat_alloc(K);
+    gsl_vector *x = gsl_vector_alloc(N);
+    gsl_vector *xmean = gsl_vector_alloc(N);
+    gsl_vector *xmin = gsl_vector_alloc(N);
+    gsl_vector *xmax = gsl_vector_alloc(N);
+    gsl_rng *r = gsl_rng_alloc(gsl_rng_default);
+    size_t i;
+    for (i = 0; i < N; ++i)
+    {
+        double xi = cos(4.0 * M_PI * i / (double)N);
+        double ei = gsl_ran_gaussian(r, 0.1);
+        gsl_vector_set(x, i, xi + ei);
+    }
+    /* compute moving statistics */
+    gsl_movstat_mean(GSL_MOVSTAT_END_PADVALUE, x, xmean, w);
+    gsl_movstat_minmax(GSL_MOVSTAT_END_PADVALUE, x, xmin, xmax, w);
+    /* print results */
+    for (i = 0; i < N; ++i)
+    {
+        printf("%zu %f %f %f %f\n",
+               i,
+               gsl_vector_get(x, i),
+               gsl_vector_get(xmean, i),
+               gsl_vector_get(xmin, i),
+               gsl_vector_get(xmax, i));
+    }
+    gsl_vector_free(x);
+    gsl_vector_free(xmean);
+    gsl_rng_free(r);
+    gsl_movstat_free(w);
+}
+
+int func(double t, const double y[], double f[],
+         void *params)
+{
+    (void)(t); /* avoid unused parameter warning */
+    double mu = *(double *)params;
+    f[0] = y[1];
+    f[1] = -y[0] - mu * y[1] * (y[0] * y[0] - 1);
+    return GSL_SUCCESS;
+}
+int jac(double t, const double y[], double *dfdy,
+        double dfdt[], void *params)
+{
+    (void)(t); /* avoid unused parameter warning */
+    double mu = *(double *)params;
+    gsl_matrix_view dfdy_mat = gsl_matrix_view_array(dfdy, 2, 2);
+    gsl_matrix *m = &dfdy_mat.matrix;
+    gsl_matrix_set(m, 0, 0, 0.0);
+    gsl_matrix_set(m, 0, 1, 1.0);
+    gsl_matrix_set(m, 1, 0, -2.0 * mu * y[0] * y[1] - 1.0);
+    gsl_matrix_set(m, 1, 1, -mu * (y[0] * y[0] - 1.0));
+    dfdt[0] = 0.0;
+    dfdt[1] = 0.0;
+    return GSL_SUCCESS;
+}
+
+
+int gsl_odeiv2_Test_1(void)
+{
+    double mu = 10;
+    gsl_odeiv2_system sys = {func, jac, 2, &mu};
+    gsl_odeiv2_driver *d =
+        gsl_odeiv2_driver_alloc_y_new(&sys, gsl_odeiv2_step_rk8pd,
+                                      1e-6, 1e-6, 0.0);
+    int i;
+    double t = 0.0, t1 = 100.0;
+    double y[2] = {1.0, 0.0};
+    for (i = 1; i <= 100; i++)
+    {
+        double ti = i * t1 / 100.0;
+        int status = gsl_odeiv2_driver_apply(d, &t, ti, y);
+        if (status != GSL_SUCCESS)
+        {
+            printf("error, return value=%d\n", status);
+            break;
+        }
+        printf("%.5e %.5e %.5e\n", t, y[0], y[1]);
+    }
+    gsl_odeiv2_driver_free(d);
+    return 0;
+}
+int gsl_odeiv2_Test_2(void)
+{
+    const gsl_odeiv2_step_type *T = gsl_odeiv2_step_rk8pd;
+    gsl_odeiv2_step *s = gsl_odeiv2_step_alloc(T, 2);
+    gsl_odeiv2_control *c = gsl_odeiv2_control_y_new(1e-6, 0.0);
+    gsl_odeiv2_evolve *e = gsl_odeiv2_evolve_alloc(2);
+    double mu = 10;
+    gsl_odeiv2_system sys = {func, jac, 2, &mu};
+    double t = 0.0, t1 = 100.0;
+    double h = 1e-6;
+    double y[2] = {1.0, 0.0};
+    while (t < t1)
+    {
+        int status = gsl_odeiv2_evolve_apply(e, c, s,
+                                             &sys,
+                                             &t, t1,
+                                             &h, y);
+        if (status != GSL_SUCCESS)
+            break;
+        printf("%.5e %.5e %.5e\n", t, y[0], y[1]);
+    }
+    gsl_odeiv2_evolve_free(e);
+    gsl_odeiv2_control_free(c);
+    gsl_odeiv2_step_free(s);
+    return 0;
+}
