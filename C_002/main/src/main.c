@@ -8,11 +8,16 @@
 #include "my_dll.h"
 #include "my_lib.h"
 #include "gsl_ma.h"
-
+#include "main.h"
+/* 32-Bit qualifier */
+#if !defined( vuint32 ) /* ASR compatibility */
+typedef unsigned long  vuint32;
+#endif
 void get_Req_Position_Test();
 void Set_Position_Percentage_Out_Test();
 uint8_t Set_Position_Percentage_Out(uint16_t Act_Position);
 uint16_t get_Req_Position(uint8_t Motor_TargetPosition_Percentage);
+
 int main()
 {
 

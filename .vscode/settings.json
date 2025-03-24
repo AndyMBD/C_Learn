@@ -12,6 +12,7 @@
                     // "editor.LineNumberForeground": "#17a346"
                                     },
                                     "cmake.sourceDirectory": "C:/D/C/git_C_01/C_Learn/C_002",
+                                    "cmake.generator": "Ninja",
                                  
 }
 
