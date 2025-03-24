@@ -9,20 +9,6 @@ import numpy as np
 import pandas as pd
 import os
 Data_Folder_Path="../../build"
-# Data_Folder_Path="."
-# Data_Folder_Path="../../build"
-# def file_selector(folder_path='../../build'):
-
-# @st.cache_data
-def file_selector(folder_path=Data_Folder_Path):
-    # Filter to only .dat files
-    filenames = [f for f in os.listdir(folder_path) if f.endswith('.dat')]
-    if not filenames:
-        st.warning("No .dat files found in directory")
-        return None
-    selected_filename = st.selectbox('Select dat file from build folder', filenames)
-    file_path = os.path.join(folder_path, selected_filename)
-    return file_path
 
 # @st.cache_data
 # def fetch_and_clean_data():
@@ -42,16 +28,40 @@ def file_selector(folder_path=Data_Folder_Path):
 #     return df_profiles
 
 # df_profiles = fetch_and_clean_data()
-file_path=file_selector()
-st.write(file_path)
-df_profiles = pd.read_csv(file_path,header=None,encoding='utf-16 LE',sep=' ')
-# df_profiles = pd.read_csv(file_path,encoding='utf-16 LE',sep=' ')
-st.write(df_profiles)
-st.write(df_profiles.index)
 
-fig,ax=plt.subplots(figsize=(10, 10))
-ax.plot(df_profiles.index,df_profiles[0])
-ax.plot(df_profiles.index,df_profiles[1])
-ax.plot(df_profiles.index,df_profiles[2])
-ax.plot(df_profiles.index,df_profiles[3])
+def file_selector(folder_path, label, key):
+    filenames = [f for f in os.listdir(folder_path) if f.endswith('.dat')]
+    if not filenames:
+        st.warning("No .dat files found in directory")
+        return None
+    selected_file = st.selectbox(label, filenames, key=key)
+    return os.path.join(folder_path, selected_file)
+
+with st.sidebar:
+    st.markdown("---")
+    file_path_1 = file_selector(Data_Folder_Path, 'Select first data file', 'file1')
+    st.write(file_path_1)
+    
+    # st.markdown("---")
+    # file_path_2 = file_selector(Data_Folder_Path, 'Select second data file', 'file2')
+    # st.write(file_path_2)
+df_profiles = pd.read_csv(file_path_1, sep=' ')
+st.write(df_profiles)
+
+fig, ax = plt.subplots(figsize=(10, 10))
+for col in df_profiles.columns:  # Use actual column headers
+    ax.plot(df_profiles[col], label=col)  # Plot using header names
+ax.grid(True)
+ax.legend()
 st.pyplot(fig)
+
+# df_profiles = pd.read_csv(file_path_2, sep=' ')
+# st.write(df_profiles)
+
+# fig, ax = plt.subplots(figsize=(10, 10))
+# for col in df_profiles.columns:  # Use actual column headers
+#     ax.plot(df_profiles[col], label=col)  # Plot using header names
+# ax.grid(True)
+# ax.legend()
+# st.pyplot(fig)
+

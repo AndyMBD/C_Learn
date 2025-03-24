@@ -45,6 +45,7 @@ void gsl_math_pow()
 }
 uint8_t gsl_Gaussian_Example_1()
 {
+    FILE *output_file;
     const size_t N = 500; /* length of time series */
     const size_t K = 51; /* window size */
     const double alpha[3] = { 0.5, 3.0, 10.0 }; /* alpha values */
@@ -75,17 +76,45 @@ uint8_t gsl_Gaussian_Example_1()
     gsl_filter_gaussian(GSL_FILTER_END_PADVALUE, alpha[1], 0, x, y2, gauss_p);
     gsl_filter_gaussian(GSL_FILTER_END_PADVALUE, alpha[2], 0, x, y3, gauss_p);
     /* print kernels */
-   #if 0 
+   #if 1
+   // Open file for writing at the beginning
+    char *Gaussian_kernels_file = "Gaussian_kernels.dat";
+    remove(Gaussian_kernels_file);
+    output_file = fopen(Gaussian_kernels_file, "w");
+    if (output_file == NULL) {
+        fprintf(stderr, "Error opening output file!\n");
+        return 1;
+    }
+    fprintf(output_file,"%s %s %s\n",\
+                        "Smooth_Data_For_Alpha_0.5",\
+                        "Smooth_Data_For_Alpha_3",\
+                        "Smooth_Data_For_Alpha_10");
     for (i = 0; i < K; ++i)
     {
         double k1i = gsl_vector_get(k1, i);
         double k2i = gsl_vector_get(k2, i);
         double k3i = gsl_vector_get(k3, i);
-        printf("%e %e %e\n", k1i, k2i, k3i);
+        // printf("%e %e %e\n", k1i, k2i, k3i);
+        fprintf(output_file,"%e %e %e\n", k1i, k2i, k3i);
     }
-    printf("\n\n");
+    // Close the file before cleanup
+    fclose(output_file);
+    // fprintf("\n\n");
    #endif
     /* print filter results */
+    // Open file for writing at the beginning
+    char *Gaussian_filter_output_file = "Gaussian_filter_output.dat";
+    remove(Gaussian_filter_output_file);
+    output_file = fopen(Gaussian_filter_output_file, "w");
+    if (output_file == NULL) {
+        fprintf(stderr, "Error opening output file!\n");
+        return 1;
+    }
+    fprintf(output_file,"%s %s %s %s\n",\
+                        "Data",\
+                        "Smooth_Data_For_Alpha_0.5",\
+                        "Smooth_Data_For_Alpha_3",\
+                        "Smooth_Data_For_Alpha_10");
     // printf("time_index Data Smooth_Data_For_Alpha_0.5 Smooth_Data_For_Alpha_3 Smooth_Data_For_Alpha_10\n");
     for (i = 0; i < N; ++i)
     {
@@ -93,8 +122,12 @@ uint8_t gsl_Gaussian_Example_1()
         double y1i = gsl_vector_get(y1, i);
         double y2i = gsl_vector_get(y2, i);
         double y3i = gsl_vector_get(y3, i);
-        printf("%.12e %.12e %.12e %.12e\n", xi, y1i, y2i, y3i);
+        // printf("%.12e %.12e %.12e %.12e\n", xi, y1i, y2i, y3i);
+        fprintf(output_file,"%.12e %.12e %.12e %.12e\n", xi, y1i, y2i, y3i);
     }
+    // Close the file before cleanup
+    fclose(output_file);
+
     gsl_vector_free(x);
     gsl_vector_free(y1);
     gsl_vector_free(y2);
