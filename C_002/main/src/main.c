@@ -7,7 +7,7 @@
 // #include "my_lib.h"
 #include "my_dll.h"
 #include "my_lib.h"
-#include "gsl_ma.h"
+#include "gsl_main.h"
 #include "main.h"
 /* 32-Bit qualifier */
 #if !defined( vuint32 ) /* ASR compatibility */

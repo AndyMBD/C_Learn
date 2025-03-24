@@ -85,3 +85,16 @@ Summary:
        target_link_libraries(${PROJECT_NAME} ${GSL_LIBRARIES})
        target_link_libraries(${PROJECT_NAME} ${GTEST_BOTH_LIBRARIES})
        ```
+
+5. use streamlit plot 
+   1.  in powershell use below command to generate data.dat
+      ```c 
+      .\C_002.exe > data.dat
+      ```
+   2.  Use streamlit to plot data.dat
+       ```python
+       streamlit run .\streamlit_plot.py
+       ```
+   3.  TODO:
+       1.  use Yaml to config the data format
+       2.  use Yaml to config the streamlit plot data.dat format
