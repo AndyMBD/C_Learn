@@ -24,6 +24,9 @@ int gsl_odeiv2_Test_2(void);
 uint8_t gsl_Gaussian_Example_1();
 uint8_t gsl_Gaussian_Example_2();
 uint8_t Square_Wave_Signal_Example();
+int ode_jac(double t, const double y[], double *dfdy, double dfdt[], void *params);
+int ode_func(double t, const double y[], double f[], void *params);
+int ode_main_1(void);
 void gsl_math_main()
 {
     // gsl_math_pow();
@@ -40,7 +43,9 @@ void gsl_math_main()
 
     // gsl_Gaussian_Example_2();
 
-    Square_Wave_Signal_Example();
+    // Square_Wave_Signal_Example();
+
+    ode_main_1();
 
     // gsl_odeiv2_Test_2();
 }
@@ -88,7 +93,8 @@ uint8_t gsl_Gaussian_Example_1()
     gsl_filter_gaussian(GSL_FILTER_END_PADVALUE, alpha[1], 0, x, y2, gauss_p);
     gsl_filter_gaussian(GSL_FILTER_END_PADVALUE, alpha[2], 0, x, y3, gauss_p);
     /* print kernels */
-#if 1
+    #if 1
+
     // Open file for writing at the beginning
     char *Gaussian_kernels_file = "Gaussian_kernels.dat";
     remove(Gaussian_kernels_file);
@@ -99,11 +105,11 @@ uint8_t gsl_Gaussian_Example_1()
         return 1;
     }
     fprintf(output_file, "%s %s %s\n",
-            "Smooth_Data_For_Alpha_0.5",
-            "Smooth_Data_For_Alpha_3",
-            "Smooth_Data_For_Alpha_10");
-    for (i = 0; i < K; ++i)
-    {
+        "Smooth_Data_For_Alpha_0.5",
+        "Smooth_Data_For_Alpha_3",
+        "Smooth_Data_For_Alpha_10");
+        for (i = 0; i < K; ++i)
+        {
         double k1i = gsl_vector_get(k1, i);
         double k2i = gsl_vector_get(k2, i);
         double k3i = gsl_vector_get(k3, i);
@@ -278,11 +284,11 @@ uint8_t Square_Wave_Signal_Example()
         double xi = gsl_vector_get(x, i);
         double medi = gsl_vector_get(y_median, i);
         double rmedi = gsl_vector_get(y_rmedian, i);
-        fprintf(output_file,"%f %f %f %f\n",
-                            ti,
-                            xi,
-                            medi,
-                            rmedi);
+        fprintf(output_file, "%f %f %f %f\n",
+                ti,
+                xi,
+                medi,
+                rmedi);
         // printf("%f %f %f %f\n",
         //        ti,
         //        xi,
@@ -441,5 +447,72 @@ int gsl_odeiv2_Test_2(void)
     gsl_odeiv2_evolve_free(e);
     gsl_odeiv2_control_free(c);
     gsl_odeiv2_step_free(s);
+    return 0;
+}
+
+int ode_func(double t, const double y[], double f[],
+             void *params)
+{
+    (void)(t); /* avoid unused parameter warning */
+    double mu = *(double *)params;
+    f[0] = y[1];
+    f[1] = -y[0] - mu * y[1] * (y[0] * y[0] - 1);
+    return GSL_SUCCESS;
+}
+int ode_jac(double t, const double y[], double *dfdy,
+            double dfdt[], void *params)
+{
+    (void)(t); /* avoid unused parameter warning */
+    double mu = *(double *)params;
+    gsl_matrix_view dfdy_mat = gsl_matrix_view_array(dfdy, 2, 2);
+    gsl_matrix *m = &dfdy_mat.matrix;
+    gsl_matrix_set(m, 0, 0, 0.0);
+    gsl_matrix_set(m, 0, 1, 1.0);
+    gsl_matrix_set(m, 1, 0, -2.0 * mu * y[0] * y[1] - 1.0);
+    gsl_matrix_set(m, 1, 1, -mu * (y[0] * y[0] - 1.0));
+    dfdt[0] = 0.0;
+    dfdt[1] = 0.0;
+    return GSL_SUCCESS;
+}
+int ode_main_1(void)
+{
+    double mu = 10;
+    gsl_odeiv2_system sys = {ode_func, ode_jac, 2, &mu};
+    gsl_odeiv2_driver *d =
+        gsl_odeiv2_driver_alloc_y_new(&sys, gsl_odeiv2_step_rk8pd,
+                                      1e-6, 1e-6, 0.0);
+    int i;
+    double t = 0.0, t1 = 100.0;
+    double y[2] = {1.0, 0.0};
+    
+    FILE *output_file;
+    // Open file for writing at the beginning
+    char *ode_main_1 = "ode_main_1.dat";
+    remove(ode_main_1);
+    output_file = fopen(ode_main_1, "w");
+    if (output_file == NULL)
+    {
+        fprintf(stderr, "Error opening output file!\n");
+        return 1;
+    
+    }
+    fprintf(output_file,"%s %s %s\n",
+        "Time",
+        "y[0]",
+        "y[1]");
+    for (i = 1; i <= 100; i++)
+    {
+        double ti = i * t1 / 100.0;
+        int status = gsl_odeiv2_driver_apply(d, &t, ti, y);
+        if (status != GSL_SUCCESS)
+        {
+            printf("error, return value=%d\n", status);
+            break;
+        }
+        fprintf(output_file,"%.5e %.5e %.5e\n", t, y[0], y[1]);
+        // printf("%.5e %.5e %.5e\n", t, y[0], y[1]);
+    }
+    fclose(output_file);
+    gsl_odeiv2_driver_free(d);
     return 0;
 }
