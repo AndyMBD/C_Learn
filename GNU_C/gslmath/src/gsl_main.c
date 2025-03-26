@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
-#include <string.h>
-#include <time.h>
 #include "gsl_main.h"
 #include <gsl/gsl_sf_bessel.h>
 #include <gsl/gsl_poly.h>
@@ -15,8 +13,6 @@
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_odeiv2.h>
 #include <gsl/gsl_filter.h>
-#include "chapter_4_mathematical_functions.h"
-FILE* create_file_to_write(char *file_name);
 void gsl_math_poly();
 void gsl_math_pow();
 void gsl_math_bessel();
@@ -31,34 +27,8 @@ uint8_t Square_Wave_Signal_Example();
 int ode_jac(double t, const double y[], double *dfdy, double dfdt[], void *params);
 int ode_func(double t, const double y[], double f[], void *params);
 int ode_main_1(void);
-int ode_main_2(void);
-FILE* create_file_to_write(char *file_name)
-{
-    FILE *output_file;
-    time_t now = time(NULL);
-    struct tm *tm_info = localtime(&now);
-    char time_str[6];
-    strftime(time_str, sizeof(time_str), "%H%M", tm_info);
-
-    char new_name[256];
-    char *dot = strrchr(file_name, '.');
-    if (dot) {
-        int base_len = dot - file_name;
-        snprintf(new_name, sizeof(new_name), "%.*s_%s%s", base_len, file_name, time_str, dot);
-    } else {
-        snprintf(new_name, sizeof(new_name), "%s_%s", file_name, time_str);
-    }
-    // remove(new_name);
-    output_file = fopen(new_name, "w");
-    if (output_file == NULL) {
-        fprintf(stderr, "Error opening output file %s!\n", new_name);
-        return NULL;
-    }
-    return output_file;
-}
 void gsl_math_main()
 {
-    chapter_4_main();
     // gsl_math_pow();
 
     // gsl_math_bessel();
@@ -75,8 +45,7 @@ void gsl_math_main()
 
     // Square_Wave_Signal_Example();
 
-    // ode_main_1();
-    // ode_main_2();
+    ode_main_1();
 
     // gsl_odeiv2_Test_2();
 }
@@ -507,8 +476,6 @@ int ode_jac(double t, const double y[], double *dfdy,
 }
 int ode_main_1(void)
 {
-    char file_name[]="ode_main.dat";
-    FILE *output_file;
     double mu = 10;
     gsl_odeiv2_system sys = {ode_func, ode_jac, 2, &mu};
     gsl_odeiv2_driver *d =
@@ -518,7 +485,17 @@ int ode_main_1(void)
     double t = 0.0, t1 = 100.0;
     double y[2] = {1.0, 0.0};
     
-    output_file = create_file_to_write(file_name);
+    FILE *output_file;
+    // Open file for writing at the beginning
+    char *ode_main_1 = "ode_main_1.dat";
+    remove(ode_main_1);
+    output_file = fopen(ode_main_1, "w");
+    if (output_file == NULL)
+    {
+        fprintf(stderr, "Error opening output file!\n");
+        return 1;
+    
+    }
     fprintf(output_file,"%s %s %s\n",
         "Time",
         "y[0]",
@@ -535,47 +512,7 @@ int ode_main_1(void)
         fprintf(output_file,"%.5e %.5e %.5e\n", t, y[0], y[1]);
         // printf("%.5e %.5e %.5e\n", t, y[0], y[1]);
     }
-    gsl_odeiv2_driver_free(d);
     fclose(output_file);
-    return 0;
-}
-int ode_main_2(void)
-{
-    char file_name[]="ode_main.dat";
-    FILE *output_file;
-    double mu = 10;
-    gsl_odeiv2_system sys = {ode_func, ode_jac, 2, &mu};
-    gsl_odeiv2_driver *d =
-        gsl_odeiv2_driver_alloc_y_new(&sys, gsl_odeiv2_step_rk8pd,
-                                      1e-6, 1e-6, 0.0);
-    int i;
-    double t = 0.0, t1 = 100.0;
-    double y[2] = {1.0, 0.0};
-    
-    gsl_odeiv2_step *s = gsl_odeiv2_step_alloc(gsl_odeiv2_step_rk8pd, 2);
-    gsl_odeiv2_step_reset(s);
-    gsl_odeiv2_step_free(s);
-    printf("step name =%s\n", gsl_odeiv2_step_name(s));
-
-    output_file = create_file_to_write(file_name);
-    fprintf(output_file,"%s %s %s\n",
-        "Time",
-        "y[0]",
-        "y[1]");
-
-    for (i = 1; i <= 100; i++)
-    {
-        double ti = i * t1 / 100.0;
-        int status = gsl_odeiv2_driver_apply(d, &t, ti, y);
-        if (status != GSL_SUCCESS)
-        {
-            printf("error, return value=%d\n", status);
-            break;
-        }
-        fprintf(output_file,"%.5e %.5e %.5e\n", t, y[0], y[1]);
-        // printf("%.5e %.5e %.5e\n", t, y[0], y[1]);
-    }
     gsl_odeiv2_driver_free(d);
-    fclose(output_file);
     return 0;
 }

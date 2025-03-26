@@ -3,5 +3,4 @@
 extern void gsl_math_main();
 // extern void gsl_math_pow();
 // extern uint8_t gsl_Gaussian_Example_1();
-extern FILE* create_file_to_write(char *file_name);
 #endif
