@@ -1,0 +1,5 @@
+#ifndef _CHAPTER_08_VECTORS_AND_MATRICES_H_
+#define _CHAPTER_08_VECTORS_AND_MATRICES_H_
+
+extern void chapter_08_vectors_and_matrices_main();
+#endif
