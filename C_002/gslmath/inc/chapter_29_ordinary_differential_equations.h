@@ -1,0 +1,5 @@
+#ifndef _CHAPTER_29_ORDINARY_DIFFERENTIAL_EQUATIONS_
+#define _CHAPTER_29_ORDINARY_DIFFERENTIAL_EQUATIONS_
+#include <stdint.h>
+extern uint32_t chapter_29_ordinary_differential_equations_main();
+#endif

@@ -47,6 +47,7 @@ with st.sidebar:
     # st.write(file_path_2)
 df_profiles = pd.read_csv(file_path_1, sep=' ')
 st.write(df_profiles)
+# ***********************************************************************
 # plot all in one figure
 # [Data_1 Data_2 ...] in one figure
 # fig, ax = plt.subplots(figsize=(10, 10))
@@ -55,32 +56,32 @@ st.write(df_profiles)
 # ax.grid(True)
 # ax.legend()
 # st.pyplot(fig)
+# ***********************************************************************
 
+# ***********************************************************************
 # plot each in each figure
 # [Data_1 Data_2 ...] in every independent figure
-# for col in df_profiles.columns:  # Use actual column headers
-#     fig, ax = plt.subplots(figsize=(10, 10))
-#     ax.plot(df_profiles[col], label=col)  # Plot using header names
-#     ax.grid(True)
-#     ax.legend()
-#     st.pyplot(fig)
+for col in df_profiles.columns:  # Use actual column headers
+    fig, ax = plt.subplots(figsize=(10, 10))
+    ax.plot(df_profiles[col], label=col)  # Plot using header names
+    ax.grid(True)
+    ax.legend()
+    st.pyplot(fig)
+# ***********************************************************************
 
+# ***********************************************************************
 # plot Time serial with other data in one figure
 # [Time Data_1 Data_2 ...]
-fig, ax = plt.subplots(figsize=(20, 10))
-time_values = df_profiles.iloc[:, 0]
-data_columns = df_profiles.columns[1:]
-for col in data_columns:  # Use actual column headers
-    ax.plot(time_values, df_profiles[col], label=col)
-ax.grid(True)
-ax.set_xlabel(df_profiles.columns[0])  # Set X-axis label to first column name
-ax.legend()
-st.pyplot(fig)
-
-# fig, ax = plt.subplots(figsize=(10, 10))
-# for col in df_profiles.columns:  # Use actual column headers
-#     ax.plot(df_profiles[col], label=col)  # Plot using header names
+# fig, ax = plt.subplots(figsize=(20, 10))
+# time_values = df_profiles.iloc[:, 0]
+# data_columns = df_profiles.columns[1:]
+# for col in data_columns:  # Use actual column headers
+#     ax.plot(time_values, df_profiles[col], label=col)
 # ax.grid(True)
+# ax.set_xlabel(df_profiles.columns[0])  # Set X-axis label to first column name
 # ax.legend()
 # st.pyplot(fig)
+# ***********************************************************************
+
+
 

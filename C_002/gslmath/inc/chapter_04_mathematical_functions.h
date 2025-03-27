@@ -1,0 +1,4 @@
+#ifndef _CHAPTER_04_MATHEMATICAL_FUNCTIONS_H_
+#define _CHAPTER_04_MATHEMATICAL_FUNCTIONS_H_
+extern uint32_t chapter_04_Mathematical_Constants_main();
+#endif

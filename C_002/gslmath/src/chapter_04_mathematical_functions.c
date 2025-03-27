@@ -1,24 +1,17 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <math.h>
-#include "chapter_4_mathematical_functions.h"
+#include "chapter_04_mathematical_functions.h"
 // #include "gsl_math.h"
 #include <gsl/gsl_math.h>
-#include <gsl/gsl_complex.h>
-#include <gsl/gsl_complex_math.h>
-#include <gsl/gsl_poly.h>
 #include <gsl/gsl_errno.h>
 
-void chapter_4_1_Mathematical_Constants();
-void chapter_5_complex_numbers();
-void chapter_6_polynomials();
-uint32_t chapter_4_main()
+void chapter_04_Mathematical_Constants_1();
+uint32_t chapter_04_Mathematical_Constants_main()
 {
-    // chapter_4_1_Mathematical_Constants();
-    chapter_5_complex_numbers();
-    // chapter_6_polynomials();
+    chapter_04_Mathematical_Constants_1();
 }
-void chapter_4_1_Mathematical_Constants()
+void chapter_04_Mathematical_Constants_1()
 {
     printf("%-10s = %.12e\n", "M_E",        M_E);
     printf("%-10s = %.12e\n", "M_LOG2E",    M_LOG2E);
@@ -57,20 +50,4 @@ void chapter_4_1_Mathematical_Constants()
     printf("%-10s = %.12e\n", "gsl_atanh",  gsl_atanh(M_PI));
     printf("%-10s = %.12e\n", "gsl_ldexp",  gsl_ldexp(M_E, 1));
     // printf("%-10s = %.12e\n", "gsl_frexp",  gsl_frexp(1.0,1));
-}
-void chapter_5_complex_numbers()
-{
-    gsl_complex x, y;
-    GSL_REAL(x) = 4;
-    GSL_IMAG(x) = 2;
-    GSL_REAL(y) = GSL_REAL(x);
-    GSL_IMAG(y) = GSL_REAL(x);
-    y = gsl_complex_polar(1.0, M_PI_4);
-    printf("%-10s = %.12e\n", "gsl_complex_abs(x)",    gsl_complex_abs(y));
-    printf("%-10s = %.12e\n", "gsl_complex_arg(x)",    gsl_complex_arg(y)/M_PI*180);
-
-}
-void chapter_6_polynomials()
-{
-
 }

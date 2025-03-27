@@ -1,0 +1,4 @@
+#ifndef _CHAPTER_07_SPECIAL_FUNCTIONS_H_
+#define _CHAPTER_07_SPECIAL_FUNCTIONS_H_
+extern void chapter_07_special_functions_main();
+#endif
