@@ -9,6 +9,8 @@
 #include "my_lib.h"
 #include "gsl_main.h"
 #include "main.h"
+#include "pthread_main.h"
+#include "time_main.h"
 /* 32-Bit qualifier */
 #if !defined( vuint32 ) /* ASR compatibility */
 typedef unsigned long  vuint32;
@@ -21,7 +23,9 @@ uint16_t get_Req_Position(uint8_t Motor_TargetPosition_Percentage);
 int main()
 {
 
-	gsl_math_main();
+	// gsl_math_main();
+	pthread_main();
+	// time_main();
 	return 0;
 }
 
